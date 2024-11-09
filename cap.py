@@ -46,8 +46,6 @@ async def end_command(client: Client, message: Message):
                 print(quality)
                 await client.send_document(message.chat.id, file.document.file_id, caption=caption)
                 episode_num += 1
-            if episode_num > episode_count:
-                break
 
         await message.reply("تمام فایل‌ها با موفقیت ارسال شدند.")
         user_data.pop(user_id, None)
