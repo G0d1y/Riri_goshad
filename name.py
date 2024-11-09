@@ -2,6 +2,7 @@ import json
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
+# Load configuration
 with open('config3.json') as config_file:
     config = json.load(config_file)
 
@@ -11,22 +12,17 @@ bot_token = config['bot_token']
 
 app = Client("name", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
+# Dictionary to store user state
 user_data = {}
-
-@app.on_message(filters.command("start"))
-async def start_handler(client, message: Message):
-    user_id = message.from_user.id
-    await message.reply("چند قسمته؟")
-    user_data[user_id] = {"step": "episode_count"}
 
 @app.on_message(filters.text)
 async def text_handler(client, message: Message):
     user_id = message.from_user.id
     user_response = message.text
 
+    # Initialize user data if not set
     if user_id not in user_data:
-        await message.reply("/start.")
-        return
+        user_data[user_id] = {"step": "episode_count"}
 
     # Check current step
     current_step = user_data[user_id].get("step")
@@ -42,9 +38,11 @@ async def text_handler(client, message: Message):
     elif current_step == "get_name":
         base_name = user_response
         episode_count = user_data[user_id]["episode_count"]
-        user_data.pop(user_id)
+        user_data.pop(user_id)  # Clear data after use
 
         resolutions = ["360p", "480p", "540p", "720p", "1080p"]
+        episode_list = []
+
         for i in range(1, episode_count + 1):
             for res in resolutions:
                 episode_name = f"{base_name}.E{i:02}.{res}"
