@@ -32,7 +32,7 @@ async def text_handler(client, message: Message):
     for i in range(1, episode_count + 1):
         for res in resolutions:
             episode_name = f"@{base_name}.E{i:02}.{res}"
-            episode_list.append(f'`{episode_name}`')
+            episode_list.append(f'`{episode_name}` \n')
 
     for i in range(0, len(episode_list), 5):
         batch = episode_list[i:i + 5]
