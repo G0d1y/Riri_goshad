@@ -27,26 +27,25 @@ async def end_command(client: Client, message: Message):
         series_name = data["series_name"]
         episode_count = data["episode_count"]
 
+        # Check if the number of files matches the episode count
         if len(files) < episode_count:
             await message.reply("تعداد فایل‌های ارسال شده کمتر از تعداد قسمت‌ها است.")
             return
 
-        qualities = ["360", "480", "540", "720", "1080"]
-
-        for episode_num in range(episode_count):  # Loop up to the specified episode count
-            file = files[episode_num]  # Access the correct file for each episode
-            for quality in qualities:
-                caption = (
-                    f"🎬 {series_name}\n"
-                    f"🐈 قسمت {episode_num + 1}\n"
-                    f"زیرنویس چسبیده بدون سانسور🍷\n"
-                    f"کیفیت: {quality}✨\n"
-                    f"🫰🏻| @RiRiKdrama | ❤️"
-                )
-                await client.send_document(message.chat.id, file.document.file_id, caption=caption)
+        # Send each file as its respective episode
+        for episode_num, file in enumerate(files[:episode_count], start=1):  # Limit to the episode count
+            caption = (
+                f"🎬 {series_name}\n"
+                f"🐈 قسمت {episode_num}\n"
+                f"زیرنویس چسبیده بدون سانسور🍷\n"
+                f"کیفیت: (کیفیت فایل آپلود شده)✨\n"
+                f"🫰🏻| @RiRiKdrama | ❤️"
+            )
+            await client.send_document(message.chat.id, file.document.file_id, caption=caption)
 
         await message.reply("تمام فایل‌ها با موفقیت ارسال شدند.")
         user_data.pop(user_id, None)
+
 
 @app.on_message(filters.text & filters.private)
 async def handle_text(client: Client, message: Message):
