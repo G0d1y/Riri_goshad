@@ -45,14 +45,9 @@ async def text_handler(client, message: Message):
         user_data.pop(user_id)
 
         resolutions = ["360p", "480p", "540p", "720p", "1080p"]
-        episode_list = []
-
         for i in range(1, episode_count + 1):
             for res in resolutions:
                 episode_name = f"{base_name}.E{i:02}.{res}"
-                episode_list.append(episode_name)
-
-        response_text = "\n".join(episode_list)
-        await message.reply(response_text)
+                await message.reply(episode_name)
 
 app.run()
