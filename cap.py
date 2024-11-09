@@ -43,6 +43,7 @@ async def end_command(client: Client, message: Message):
                     f"کیفیت: {quality}✨\n"
                     f"🫰🏻| @RiRiKdrama | ❤️"
                 )
+                print(quality)
                 await client.send_document(message.chat.id, file.document.file_id, caption=caption)
                 episode_num += 1
                 if episode_num > episode_count:
