@@ -22,26 +22,25 @@ async def text_handler(client, message: Message):
 
     # Initialize user data if not set
     if user_id not in user_data:
-        user_data[user_id] = {"step": "episode_count"}
+        user_data[user_id] = {}
 
-    # Check current step
-    current_step = user_data[user_id].get("step")
-
-    if current_step == "episode_count":
+    # Check if user has already provided episode count
+    if "episode_count" not in user_data[user_id]:
+        # Expecting episode count as a number
         if user_response.isdigit():
             user_data[user_id]["episode_count"] = int(user_response)
-            user_data[user_id]["step"] = "get_name"
-            await message.reply("اسم رو به من بگو")
+            await message.reply("لطفاً نام را وارد کنید")
         else:
-            await message.reply("لطفاً یک عدد وارد کنید.")
-
-    elif current_step == "get_name":
-        base_name = user_response
+            await message.reply("لطفاً یک عدد معتبر وارد کنید.")
+    
+    elif "base_name" not in user_data[user_id]:
+        # Expecting the base name after episode count
+        user_data[user_id]["base_name"] = user_response
         episode_count = user_data[user_id]["episode_count"]
-        user_data.pop(user_id)  # Clear data after use
+        base_name = user_data[user_id]["base_name"]
 
+        # Generate the episode list
         resolutions = ["360p", "480p", "540p", "720p", "1080p"]
-        episode_list = []
 
         for i in range(1, episode_count + 1):
             for res in resolutions:
@@ -49,5 +48,8 @@ async def text_handler(client, message: Message):
                 await message.reply(f'```{episode_name}```')
 
         await message.reply("شروع مجدد /start")
+
+        # Clear user data for a new session
+        user_data.pop(user_id)
 
 app.run()
