@@ -1,5 +1,6 @@
 import json
 import re
+import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
@@ -31,9 +32,12 @@ async def text_handler(client, message: Message):
     for i in range(1, episode_count + 1):
         for res in resolutions:
             episode_name = f"@{base_name}.E{i:02}.{res}"
-            episode_list.append(episode_name)
+            episode_list.append(f'`{episode_name}`')
 
-    response_text = "\n".join(episode_list)
-    await message.reply(response_text)
+    for i in range(0, len(episode_list), 5):
+        batch = episode_list[i:i + 5]
+        response_text = "\n".join(batch)
+        await message.reply(response_text)
+        await asyncio.sleep(1)
 
 app.run()
