@@ -21,7 +21,6 @@ user_data = {}
 async def start(client: Client, message: Message):
     await message.reply("تعداد قسمت‌ها و نام سریال را به فرمت زیر وارد کنید:\n\n10\n🎬 سریال آقای پلانکتون")
     user_data[message.from_user.id] = {"step": "waiting_for_info", "files": []}
-    print(f"User {message.from_user.id} started the bot.")
 
 # Handle text messages for episode count and series name
 @app.on_message(filters.text & filters.private)
@@ -39,7 +38,6 @@ async def handle_text(client: Client, message: Message):
                 "step": "waiting_for_files"
             })
             await message.reply("فایل‌ها را ارسال کنید. پس از ارسال همه فایل‌ها، دستور /end را بزنید.")
-            print(f"User {user_id} provided series info: {episode_count} episodes, {series_name}")
         else:
             await message.reply("فرمت وارد شده صحیح نیست. لطفاً تعداد قسمت‌ها و نام سریال را به فرمت درست وارد کنید.")
 
@@ -50,8 +48,8 @@ async def handle_files(client: Client, message: Message):
     if user_id in user_data and user_data[user_id]["step"] == "waiting_for_files":
         # Save file to user data
         user_data[user_id]["files"].append(message)
-        await message.reply(f"فایل شماره {len(user_data[user_id]['files'])} ذخیره شد.")
-        print(f"File received from user {user_id}, total files: {len(user_data[user_id]['files'])}")
+        file_count = len(user_data[user_id]["files"])
+        await message.reply(f"فایل شماره {file_count} ذخیره شد.")
 
 # Handle /end command to send files with captions
 @app.on_message(filters.command("end") & filters.private)
@@ -63,9 +61,9 @@ async def end_command(client: Client, message: Message):
         series_name = data["series_name"]
         episode_count = data["episode_count"]
 
+        # Check if enough files have been sent
         if len(files) < episode_count:
             await message.reply("تعداد فایل‌های ارسال شده کمتر از تعداد قسمت‌ها است.")
-            print(f"User {user_id} has not sent enough files: {len(files)} of {episode_count} expected.")
             return
 
         # Define qualities for each batch
@@ -90,7 +88,6 @@ async def end_command(client: Client, message: Message):
                 break
 
         await message.reply("تمام فایل‌ها با موفقیت ارسال شدند.")
-        print(f"All files for user {user_id} have been sent.")
 
         # Clear user data after sending files
         user_data.pop(user_id, None)
