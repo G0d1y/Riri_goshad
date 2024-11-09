@@ -55,6 +55,7 @@ async def handle_files(client: Client, message: Message):
 @app.on_message(filters.command("end") & filters.private)
 async def end_command(client: Client, message: Message):
     user_id = message.from_user.id
+    print(user_id)
     print(user_id in user_data and user_data[user_id]["step"] == "waiting_for_files")
     if user_id in user_data and user_data[user_id]["step"] == "waiting_for_files":
         data = user_data[user_id]
