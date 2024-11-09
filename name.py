@@ -48,6 +48,8 @@ async def text_handler(client, message: Message):
         for i in range(1, episode_count + 1):
             for res in resolutions:
                 episode_name = f"{base_name}.E{i:02}.{res}"
-                await message.reply(episode_name)
+                await message.reply(f'```{episode_name}```')
+
+        await message.reply("شروع مجدد /start")
 
 app.run()
