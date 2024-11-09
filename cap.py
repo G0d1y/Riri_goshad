@@ -33,9 +33,8 @@ async def end_command(client: Client, message: Message):
 
         qualities = ["360", "480", "540", "720", "1080"]
         
-        episode_num = 1
-        for quality in qualities:
-            for file in files:
+        for episode_num, file in enumerate(files, start=1):
+            for quality in qualities:
                 caption = (
                     f"🎬 {series_name}\n"
                     f"🐈 قسمت {episode_num}\n"
@@ -43,12 +42,11 @@ async def end_command(client: Client, message: Message):
                     f"کیفیت: {quality}✨\n"
                     f"🫰🏻| @RiRiKdrama | ❤️"
                 )
-                print(quality)
                 await client.send_document(message.chat.id, file.document.file_id, caption=caption)
-                episode_num += 1
-
+        
         await message.reply("تمام فایل‌ها با موفقیت ارسال شدند.")
         user_data.pop(user_id, None)
+
 
 @app.on_message(filters.text & filters.private)
 async def handle_text(client: Client, message: Message):
