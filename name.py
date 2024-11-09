@@ -26,11 +26,14 @@ async def text_handler(client, message: Message):
     base_name = match.group(2)
 
     resolutions = ["360p", "480p", "540p", "720p", "1080p"]
-    for i in range(1, episode_count + 1):
-            for res in resolutions:
-                episode_name = f"{base_name}.E{i:02}.{res}"
-                await message.reply(f'```{episode_name}```')
+    episode_list = []
 
-    await message.reply("شروع مجدد /start")
+    for i in range(1, episode_count + 1):
+        for res in resolutions:
+            episode_name = f"@{base_name}.E{i:02}.{res}"
+            episode_list.append(episode_name)
+
+    response_text = "\n".join(episode_list)
+    await message.reply(response_text)
 
 app.run()
