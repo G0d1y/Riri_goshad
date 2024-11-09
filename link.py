@@ -10,7 +10,7 @@ api_id = int(config['api_id'])
 api_hash = config['api_hash']
 bot_token = config['bot_token']
 
-app = Client("bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+app = Client("link", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
 url_pattern = re.compile(r'https?://[^\s]+')
 
