@@ -21,8 +21,6 @@ async def start(client: Client, message: Message):
 @app.on_message(filters.command("end") & filters.private)
 async def end_command(client: Client, message: Message):
     user_id = message.from_user.id
-    print(user_id)
-    print(user_id in user_data and user_data[user_id]["step"] == "waiting_for_files")
     if user_id in user_data and user_data[user_id]["step"] == "waiting_for_files":
         data = user_data[user_id]
         files = data["files"]
@@ -53,7 +51,6 @@ async def end_command(client: Client, message: Message):
                 break
 
         await message.reply("تمام فایل‌ها با موفقیت ارسال شدند.")
-
         user_data.pop(user_id, None)
 
 @app.on_message(filters.text & filters.private)
@@ -78,11 +75,9 @@ async def handle_text(client: Client, message: Message):
 async def handle_files(client: Client, message: Message):
     user_id = message.from_user.id
     if user_id in user_data and user_data[user_id]["step"] == "waiting_for_files":
-
         user_data[user_id]["files"].append(message)
         file_count = len(user_data[user_id]["files"])
         await message.reply(f"فایل شماره {file_count} ذخیره شد.")
-
 
 # Run the bot
 app.run()
