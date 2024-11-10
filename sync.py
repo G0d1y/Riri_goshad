@@ -42,12 +42,16 @@ async def end_collecting(client, message: Message):
         await message.reply("تعداد نام‌ها با تعداد لینک‌ها تطابق ندارد. لطفاً برای هر جفت لینک نام اضافه کنید.")
         return
 
-    for mkv, srt, name in zip(mkv_links, srt_links, names):
-        formatted_message = f"{mkv}\n\n{srt}\n\n{name}"
-        await message.reply(formatted_message)
+    formatted_messages = [
+        f"{mkv}\n\n{srt}\n\n{name}"
+        for mkv, srt, name in zip(mkv_links, srt_links, names)
+    ]
+
+    for i in range(0, len(formatted_messages), 10):
+        batch = formatted_messages[i:i+10]
+        await message.reply("\n\n".join(batch))
     
     await message.reply("شروع مجدد /start")
-
 
     mkv_links = []
     srt_links = []
