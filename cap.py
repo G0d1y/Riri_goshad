@@ -55,7 +55,7 @@ async def end_command(client: Client, message: Message):
         # Step 2: Send each episode as a media group
         for episode_num in range(1, episode_count + 1):
             episode_ordinal = persian_ordinals[episode_num - 1] if episode_num <= len(persian_ordinals) else str(episode_num)
-            last_part = " (قسمت اخر)" if episode_num == episode_count else ""
+            last_part = " (اخر)" if episode_num == episode_count else ""
 
             media_group = []
             for quality in qualities:
