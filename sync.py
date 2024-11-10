@@ -2,7 +2,10 @@ import json
 import re
 from pyrogram import Client, filters
 from pyrogram.types import Message
-
+import time
+import os
+import subprocess
+import signal
 with open('config2.json') as config_file:
     config = json.load(config_file)
 
@@ -19,6 +22,27 @@ collecting_links = False
 mkv_links = []
 srt_links = []
 names = []
+
+def find_and_kill_bot():
+    try:
+        pid = int(subprocess.check_output(["pgrep", "-f", "sync.py"]))
+        
+        os.kill(pid, signal.SIGTERM)
+        print(f"Stopped bot with PID {pid}")
+        
+        time.sleep(2)
+    except subprocess.CalledProcessError:
+        print("Bot is not running.")
+
+def start_bot():
+    subprocess.Popen(["nohup", "python3", "sync.py", "&"])
+    print("Bot restarted.")
+
+@app.on_message(filters.command("restart"))
+def restart(client, message):
+    find_and_kill_bot()
+    start_bot()
+    client.send_message(message.chat.id, "Bot restarted.")
 
 @app.on_message(filters.command("start"))
 async def start_collecting(client, message: Message):

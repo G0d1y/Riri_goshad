@@ -3,6 +3,10 @@ import re
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
+import time
+import os
+import subprocess
+import signal
 
 with open('config3.json') as config_file:
     config = json.load(config_file)
@@ -12,6 +16,27 @@ api_hash = config['api_hash']
 bot_token = config['bot_token']
 
 app = Client("name", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+
+def find_and_kill_bot():
+    try:
+        pid = int(subprocess.check_output(["pgrep", "-f", "name.py"]))
+        
+        os.kill(pid, signal.SIGTERM)
+        print(f"Stopped bot with PID {pid}")
+        
+        time.sleep(2)
+    except subprocess.CalledProcessError:
+        print("Bot is not running.")
+
+def start_bot():
+    subprocess.Popen(["nohup", "python3", "name.py", "&"])
+    print("Bot restarted.")
+
+@app.on_message(filters.command("restart"))
+def restart(client, message):
+    find_and_kill_bot()
+    start_bot()
+    client.send_message(message.chat.id, "Bot restarted.")
 
 @app.on_message(filters.text)
 async def text_handler(client, message: Message):

@@ -1,6 +1,10 @@
 import json
 from pyrogram import Client, filters
 from pyrogram.types import Message, InputMediaDocument
+import time
+import os
+import subprocess
+import signal
 
 with open('config4.json') as config_file:
     config = json.load(config_file)
@@ -22,6 +26,27 @@ persian_ordinals = [
     "بیست و نهم", "سی‌ام", "سی و یکم", "سی و دوم", "سی و سوم", "سی و چهارم",
     # Continue adding more if necessary up to صد (100) or beyond
 ]
+
+def find_and_kill_bot():
+    try:
+        pid = int(subprocess.check_output(["pgrep", "-f", "cap.py"]))
+        
+        os.kill(pid, signal.SIGTERM)
+        print(f"Stopped bot with PID {pid}")
+        
+        time.sleep(2)
+    except subprocess.CalledProcessError:
+        print("Bot is not running.")
+
+def start_bot():
+    subprocess.Popen(["nohup", "python3", "cap.py", "&"])
+    print("Bot restarted.")
+
+@app.on_message(filters.command("restart"))
+def restart(client, message):
+    find_and_kill_bot()
+    start_bot()
+    client.send_message(message.chat.id, "Bot restarted.")
 
 @app.on_message(filters.command("start") & filters.private)
 async def start(client: Client, message: Message):
