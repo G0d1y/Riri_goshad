@@ -15,7 +15,7 @@ bot_token = config['bot_token']
 
 app = Client("sync", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
-mkv_pattern = re.compile(r'https?://\S+\.mkv', re.IGNORECASE)
+video_pattern = re.compile(r'https?://\S+\.(mkv|mp4)', re.IGNORECASE)
 srt_pattern = re.compile(r'https?://\S+\.srt', re.IGNORECASE)
 
 collecting_links = False
@@ -87,7 +87,7 @@ async def collect_links(client, message: Message):
     if not collecting_links:
         return
 
-    mkv_match = mkv_pattern.search(message.text)
+    mkv_match = video_pattern.search(message.text)
     srt_match = srt_pattern.search(message.text)
     
     if mkv_match and not srt_match:
